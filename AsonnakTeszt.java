@@ -173,104 +173,113 @@ public class AsonnakTeszt {
 
         kiir(Domb);
 
-        //Terjedés és emelkedés
+        //Terjedés
         int count = 0;
-        for (int i = 0; i < Domb.length; i++) {
-            for (int j = 0; j < Domb.length; j++) {
-                if (i + 1 == k1 && j == k2) {
-                    if (Domb[k1][k2] == Domb[i][j] * -1) {
-                        Domb[i][j] = Domb[k1][k2];
-                        count++;
-                    }
-                }
-                if (i == k1 && j + 1 == k2) {
-                    if (Domb[k1][k2] == Domb[i][j] * -1) {
-                        Domb[i][j] = Domb[k1][k2];
-                        count++;
-                    }
-                }
-                if (i == k1 && j == k2 + 1) {
-                    if (Domb[k1][k2] == Domb[i][j] * -1) {
-                        Domb[i][j] = Domb[k1][k2];
-                        count++;
-                    }
-                }
-                if (i == k1 + 1 && j == k2) {
-                    if (Domb[k1][k2] == Domb[i][j] * -1) {
-                        Domb[i][j] = Domb[k1][k2];
-                        count++;
-                    }
-                }
-            }
-        }
-
         int cnsz = 0; // Count: Nem szomszédos
 
         do {
-            for (int e = 0; e < Domb.length; e++) {
-                for (int k = 0; k < Domb.length; k++) {
-                    if (Domb[e][k] < 0) {
-                        for (int i = 0; i < Domb.length; i++) {
-                            for (int j = 0; j < Domb.length; j++) {
-                                cnsz = 0;
-                                if (i + 1 == e && j == k && count != 4) {
-                                    if (Domb[e][k] == Domb[i][j] * -1) {
-                                        Domb[i][j] = Domb[e][k];
-                                        count++;
-                                        cnsz++;
-                                    }
-                                }
-                                if (i == e && j + 1 == k && count != 4) {
-                                    if (Domb[e][k] == Domb[i][j] * -1) {
-                                        Domb[i][j] = Domb[e][k];
-                                        count++;
-                                        cnsz++;
-                                    }
-                                }
-                                if (i == e && j == k + 1 && count != 4) {
-                                    if (Domb[e][k] == Domb[i][j] * -1) {
-                                        Domb[i][j] = Domb[e][k];
-                                        count++;
-                                        cnsz++;
-                                    }
-                                }
-                                if (i == e + 1 && j == k && count != 4) {
-                                    if (Domb[e][k] == Domb[i][j] * -1) {
-                                        Domb[i][j] = Domb[e][k];
-                                        count++;
-                                        cnsz++;
-                                    }
+            count = 0;
+            do {
+                cnsz = 0;
+                for (int e = 0; e < Domb.length; e++) {
+                    for (int k = 0; k < Domb.length; k++) {
+                        if (Domb[e][k] < 0) {
+                            if (e != 0) {
+
+                                if (count != 4 && Domb[e][k] == Domb[e - 1][k] * -1) {
+                                    Domb[e - 1][k] = Domb[e][k];
+                                    count++;
+                                    cnsz++;
                                 }
                             }
+                            if (k != 0) {
 
+                                if (count != 4 && Domb[e][k] == Domb[e][k - 1] * -1) {
+                                    Domb[e][k - 1] = Domb[e][k];
+                                    count++;
+                                    cnsz++;
+                                }
+                            }
+                            if (k != 3) {
+
+                                if (count != 4 && Domb[e][k] == Domb[e][k + 1] * -1) {
+                                    Domb[e][k + 1] = Domb[e][k];
+                                    count++;
+                                    cnsz++;
+                                }
+                            }
+                            if (e != 3) {
+
+                                if (count != 4 && Domb[e][k] == Domb[e + 1][k] * -1) {
+                                    Domb[e + 1][k] = Domb[e][k];
+                                    count++;
+                                    cnsz++;
+                                }
+                            }
                         }
-                    }
 
+                    }
                 }
 
-            }
-        } while (count != 4 && cnsz != 0);
+            } while (count != 4 && cnsz != 0);
 
-        kiir(Domb);
-        System.out.println(count);
-        
-        
-        
-        
-        
+            kiir(Domb);
+            System.out.println(count);
+            System.out.println(cnsz);
+        } while (cnsz != 0);
+
         //Emelkedés
-        int v = Domb[k1][k2];
+        int l = Domb[k1][k2]; // Legkisebb
         for (int i = 0; i < Domb.length; i++) {
             for (int j = 0; j < Domb.length; j++) {
-                if (Domb[i][j]==v) {
+                if (Domb[i][j] == l) {
                     Domb[i][j] -= 1;
                 }
-                
+
             }
-            
+
         }
         kiir(Domb);
-        
 
+        //Terjedés és lefolyás
+        int a = 0; //Alacsonyabb. 232->23-2->23-3->2-3-3-> 2=>a
+        for (int e = 0; e < Domb.length; e++) {
+            for (int k = 0; k < Domb.length; k++) {
+                if (Domb[e][k] < 0) {
+                    if (e != 0) {
+                        if (count != 4 && Domb[e][k] > Domb[e - 1][k] * -1) {
+                            Domb[e - 1][k] *= -1;
+                            a++;
+                        }
+                    }
+                    if (k != 0) {
+
+                        if (count != 4 && Domb[e][k] == Domb[e][k - 1] * -1) {
+                            Domb[e][k - 1] = Domb[e][k];
+                            count++;
+                            cnsz++;
+                        }
+                    }
+                    if (k != 3) {
+
+                        if (count != 4 && Domb[e][k] == Domb[e][k + 1] * -1) {
+                            Domb[e][k + 1] = Domb[e][k];
+                            count++;
+                            cnsz++;
+                        }
+                    }
+                    if (e != 3) {
+                        if (count != 4 && Domb[e][k] == Domb[e + 1][k] * -1) {
+                            Domb[e + 1][k] = Domb[e][k];
+                            count++;
+                            cnsz++;
+                        }
+                    }
+                }
+
+            }
+
+        }
+        kiir(Domb);
     }
 }
