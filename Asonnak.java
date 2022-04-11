@@ -18,6 +18,7 @@ Készíts egy programot, ami véletlenszerűen, de nagyjából életszerű terep
  - előfordul, hogy egy szomszédos völgybe átfolyik a víz és azt is elkezdi telíteni, ezért mindig csak a legalacsonyabb víz szintje növekszik.
  - a console-ra írd ki mindig az aktuális állapotot minden egyes lépés után
 //*/
+
 package asonnak;
 
 import java.util.Arrays;
@@ -191,8 +192,6 @@ public class Asonnak {
 
         int r = rnd.nextInt(fh);
         fh = -1;
-        int ih = 0; //Sornak a helye
-        int jh = 0; //Oszlopnak a helye
 
         for (int i = 0; i < Domb.length; i++) {
             for (int j = 0; j < Domb.length; j++) {
@@ -200,8 +199,6 @@ public class Asonnak {
                     fh++;
                     if (fh == r) {
                         Domb[i][j] *= -1;
-                        ih = i;
-                        jh = j;
                     }
                 }
             }
@@ -209,140 +206,130 @@ public class Asonnak {
 
         kiir(Domb);//A forráspont kitört
 
-        //Terjedés
-        int cá = 0; // Count: Átfolyt. Számon tartja mennyi területre folyt már át.
-        int cnsz = 0; // Count: Nem szomszédos
-
-        do { //Addig csinálja amíg nem tud átfolyni.
-            cá = 0;
-            do { //Ha átfolyt 4-re vagy nem tud átfolnyi akkor kiírja az átváltoztatottad. Mi van ha nem tud átfolyni akkor kiírja mégegyszer az előzőt?!!
-                cnsz = 0;
-                for (int i = 0; i < Domb.length; i++) {
-                    for (int j = 0; j < Domb.length; j++) {
-                        if (Domb[i][j] < 0) { //Ide majd a legkisebb kell!!
-                            if (i != 0) {
-                                if (cá != 4 && Domb[i][j] == Domb[i - 1][j] * -1) {
-                                    Domb[i - 1][j] = Domb[i][j];
-                                    cá++;
-                                    cnsz++;
-                                }
-                            }
-
-                            if (j != 0) {
-                                if (cá != 4 && Domb[i][j] == Domb[i][j - 1] * -1) {
-                                    Domb[i][j - 1] = Domb[i][j];
-                                    cá++;
-                                    cnsz++;
-                                }
-                            }
-
-                            if (j != 3) {
-                                if (cá != 4 && Domb[i][j] == Domb[i][j + 1] * -1) {
-                                    Domb[i][j + 1] = Domb[i][j];
-                                    cá++;
-                                    cnsz++;
-                                }
-                            }
-
-                            if (i != 3) {
-                                if (cá != 4 && Domb[i][j] == Domb[i + 1][j] * -1) {
-                                    Domb[i + 1][j] = Domb[i][j];
-                                    cá++;
-                                    cnsz++;
-                                }
-                            }
-                        }
-
-                    }
-                }
-            } while (cá != 4 && cnsz != 0);
-
-            if (cá != 0) {
-                kiir(Domb); //Ha legalább 1 területre átfolyt akkor írja ki
-            }
-
-        } while (cnsz != 0);
-
-        //Emelkedés
-        int l = -5; //Legkisebb
-
-        for (int i = 0; i < Domb.length; i++) {
-            for (int j = 0; j < Domb.length; j++) {
-                if (Domb[i][j] < 0 && Domb[i][j] > l) {
-                    l = Domb[i][j];
-                }
-            }
-        }
-
-        for (int i = 0; i < Domb.length; i++) {
-            for (int j = 0; j < Domb.length; j++) {
-                if (Domb[i][j] == l) {
-                    Domb[i][j] -= 1;
-                }
-
-            }
-        }
-
-        kiir(Domb);
-
-        //Lefolyás
-        //Lefolyt-e egyáltalán; ha igen előszőr folyon tovább, ezt addig ismételje, ameddig tudja; utána jöjjön a tovább folyás és utána az emelkedés
-        int a;
-
-        //Keresse meg amihez viszonyítani kell.
-        for (int i = 0; i < Domb.length; i++) {
-            for (int j = 0; j < Domb.length; j++) {
-                if (Domb[i][j] < 0 && Domb[i][j] > l) {
-                    l = Domb[i][j];
-                }
-            }
-        }
+        //Lefolyás, átfolyás, és töltődés a legvégéig. 
+        int cá; // Count: Átfolyt. Számon tartja mennyi területre folyt már át.
+        int cnsz; // Count: Nem szomszédos
+        int L; //Legkisebb
+        int A; //Alacsonyabb
 
         do {
-            a = 0;
-            cá = 0; //Lefolyhat egyszerre 5 helyre is akár.
-            for (int i = 0; i < Domb.length; i++) {
-                for (int j = 0; j < Domb.length; j++) {
-                    if (Domb[i][j] == l) {
-                        if (i != 0) {
-                            if (cá != 4 && Domb[i][j] < Domb[i - 1][j] * -1 && Domb[i - 1][j] > 0) {
-                                Domb[i - 1][j] = Domb[i][j];
-                                cá++;
-                                a++;
-                            }
-                        }
-
-                        if (j != 0) {
-                            if (cá != 4 && Domb[i][j] < Domb[i][j - 1] * -1 && Domb[i][j - 1] > 0) {
-                                Domb[i][j - 1] = Domb[i][j];
-                                cá++;
-                                a++;
-                            }
-                        }
-
-                        if (j != 3) {
-                            if (cá != 4 && Domb[i][j] < Domb[i][j + 1] * -1 && Domb[i][j + 1] > 0) {
-                                Domb[i][j + 1] = Domb[i][j];
-                                cá++;
-                                a++;
-                            }
-                        }
-
-                        if (i != 3) {
-                            if (cá != 4 && Domb[i][j] < Domb[i + 1][j] * -1 && Domb[i + 1][j] > 0) {
-                                Domb[i + 1][j] = Domb[i][j];
-                                cá++;
-                                a++;
+            do { //ÁTFOLYÁS //Addig csinálja amíg nem tud átfolyni.
+                do { //LEFOLYÁS //Legkisebb meghatározása és lefolyások. (Itt a legkisebb miatt fontos, hogy min 1szer megcsinálja.
+                    L = -5;
+                    for (int i = 0; i < Domb.length; i++) {
+                        for (int j = 0; j < Domb.length; j++) {
+                            if (Domb[i][j] < 0 && Domb[i][j] > L) {
+                                L = Domb[i][j];
                             }
                         }
                     }
+
+                    A = 0;
+                    cá = 0; //Lefolyhat egyszerre 5 helyre is akár.
+                    for (int i = 0; i < Domb.length; i++) {
+                        for (int j = 0; j < Domb.length; j++) {
+                            if (Domb[i][j] == L) {
+                                if (i != 0) {
+                                    if (cá != 4 && Domb[i][j] < Domb[i - 1][j] * -1 && Domb[i - 1][j] > 0) {
+                                        Domb[i - 1][j] *= -1;
+                                        cá++;
+                                        A++;
+                                    }
+                                }
+
+                                if (j != 0) {
+                                    if (cá != 4 && Domb[i][j] < Domb[i][j - 1] * -1 && Domb[i][j - 1] > 0) {
+                                        Domb[i][j - 1] *= -1;
+                                        cá++;
+                                        A++;
+                                    }
+                                }
+
+                                if (j != 3) {
+                                    if (cá != 4 && Domb[i][j] < Domb[i][j + 1] * -1 && Domb[i][j + 1] > 0) {
+                                        Domb[i][j + 1] *= -1;
+                                        cá++;
+                                        A++;
+                                    }
+                                }
+
+                                if (i != 3) {
+                                    if (cá != 4 && Domb[i][j] < Domb[i + 1][j] * -1 && Domb[i + 1][j] > 0) {
+                                        Domb[i + 1][j] *= -1;
+                                        cá++;
+                                        A++;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    if (A != 0) {
+                        kiir(Domb);
+                    }
+                } while (A != 0);
+
+                cá = 0;
+                do { //Ha átfolyt 4-re vagy nem tud átfolnyi akkor kiírja az átváltoztatottad. Mi van ha nem tud átfolyni akkor kiírja mégegyszer az előzőt?!!
+                    cnsz = 0;
+                    for (int i = 0; i < Domb.length; i++) {
+                        for (int j = 0; j < Domb.length; j++) {
+                            if (Domb[i][j] == L) {
+                                if (i != 0) {
+                                    if (cá != 4 && Domb[i][j] == Domb[i - 1][j] * -1) {
+                                        Domb[i - 1][j] = Domb[i][j];
+                                        cá++;
+                                        cnsz++;
+                                    }
+                                }
+
+                                if (j != 0) {
+                                    if (cá != 4 && Domb[i][j] == Domb[i][j - 1] * -1) {
+                                        Domb[i][j - 1] = Domb[i][j];
+                                        cá++;
+                                        cnsz++;
+                                    }
+                                }
+
+                                if (j != 3) {
+                                    if (cá != 4 && Domb[i][j] == Domb[i][j + 1] * -1) {
+                                        Domb[i][j + 1] = Domb[i][j];
+                                        cá++;
+                                        cnsz++;
+                                    }
+                                }
+
+                                if (i != 3) {
+                                    if (cá != 4 && Domb[i][j] == Domb[i + 1][j] * -1) {
+                                        Domb[i + 1][j] = Domb[i][j];
+                                        cá++;
+                                        cnsz++;
+                                    }
+                                }
+                            }
+
+                        }
+                    }
+                } while (cá != 4 && cnsz != 0);
+
+                if (cá != 0) {
+                    kiir(Domb); //Ha legalább 1 területre átfolyt akkor írja ki
+                }
+
+            } while (cnsz != 0);
+
+            //EMELKEDÉS
+            for (int i = 0; i < Domb.length; i++) {
+                for (int j = 0; j < Domb.length; j++) {
+                    if (Domb[i][j] == L && L != -4) {
+                        Domb[i][j] -= 1;
+                    }
+
                 }
             }
-            if (a != 0) {
-                kiir(Domb);
-            }
-        } while (a != 0);
 
+            kiir(Domb);
+
+        } while (vége(Domb));
     }
 
 }
