@@ -1,11 +1,8 @@
 /*
 Hegység és forrás szimuláció
-
 1. feladat 
-
 Készíts egy programot, ami véletlenszerűen, de nagyjából életszerű terepet generál, dombokkal, völgyekkel. A mérete legyen paraméterezhető.
  Találd meg a legalacsonyabb pontját/pontjait.
-
 2. feladat
  Tegyük fel, hogy az egyik legalacsonyabb pontjában feltör egy forrás és elkezdi feltölteni a völgyeket. Szimuláld ezt a folyamatot!
  
@@ -211,6 +208,7 @@ public class Asonnak {
         int cnsz; // Count: Nem szomszédos
         int L; //Legkisebb
         int A; //Alacsonyabb
+        int E; //Emelkedik
 
         do {
             do { //ÁTFOLYÁS //Addig csinálja amíg nem tud átfolyni.
@@ -318,16 +316,22 @@ public class Asonnak {
             } while (cnsz != 0);
 
             //EMELKEDÉS
+            E=0;
             for (int i = 0; i < Domb.length; i++) {
                 for (int j = 0; j < Domb.length; j++) {
                     if (Domb[i][j] == L && L != -4) {
                         Domb[i][j] -= 1;
+                        E++;
                     }
 
                 }
             }
-
-            kiir(Domb);
+            
+            if (E != 0) {
+                kiir(Domb);
+            }
+            
+            
 
         } while (vége(Domb));
     }
