@@ -205,10 +205,11 @@ public class Asonnak {
 
         //Lefolyás, átfolyás, és töltődés a legvégéig. 
         int cá; // Count: Átfolyt. Számon tartja mennyi területre folyt már át.
-        int cnsz; // Count: Nem szomszédos
+        int cl; // Count: Lefolyt. 
+        boolean cnsz; // Count: Nem szomszédos
         int L; //Legkisebb
-        int A; //Alacsonyabb
-        int E; //Emelkedik
+        boolean A; //Alacsonyabb  //cl-el az összeset lehet helyettesíteni
+        boolean E; //Emelkedik
 
         do {
             do { //ÁTFOLYÁS //Addig csinálja amíg nem tud átfolyni.
@@ -222,16 +223,16 @@ public class Asonnak {
                         }
                     }
 
-                    A = 0;
-                    cá = 0; //Lefolyhat egyszerre 5 helyre is akár.
+                    A = false;
+                    cá = 0; //Lefolyhat egyszerre 5 helyre is akár. //cl!!
                     for (int i = 0; i < Domb.length; i++) {
                         for (int j = 0; j < Domb.length; j++) {
-                            if (Domb[i][j] == L) {
+                            if (Domb[i][j] == L) { //cá+cl != 4!!
                                 if (i != 0) {
                                     if (cá != 4 && Domb[i][j] < Domb[i - 1][j] * -1 && Domb[i - 1][j] > 0) {
                                         Domb[i - 1][j] *= -1;
                                         cá++;
-                                        A++;
+                                        A = true;
                                     }
                                 }
 
@@ -239,7 +240,7 @@ public class Asonnak {
                                     if (cá != 4 && Domb[i][j] < Domb[i][j - 1] * -1 && Domb[i][j - 1] > 0) {
                                         Domb[i][j - 1] *= -1;
                                         cá++;
-                                        A++;
+                                        A = true;
                                     }
                                 }
 
@@ -247,7 +248,7 @@ public class Asonnak {
                                     if (cá != 4 && Domb[i][j] < Domb[i][j + 1] * -1 && Domb[i][j + 1] > 0) {
                                         Domb[i][j + 1] *= -1;
                                         cá++;
-                                        A++;
+                                        A = true;
                                     }
                                 }
 
@@ -255,20 +256,20 @@ public class Asonnak {
                                     if (cá != 4 && Domb[i][j] < Domb[i + 1][j] * -1 && Domb[i + 1][j] > 0) {
                                         Domb[i + 1][j] *= -1;
                                         cá++;
-                                        A++;
+                                        A = true;
                                     }
                                 }
                             }
                         }
                     }
-                    if (A != 0) {
+                    if (A) { //cl != 0 is működne!!
                         kiir(Domb);
                     }
-                } while (A != 0);
+                } while (A); //cl != 0 is működne!!
 
                 cá = 0;
                 do { //Ha átfolyt 4-re vagy nem tud átfolnyi akkor kiírja az átváltoztatottad. Mi van ha nem tud átfolyni akkor kiírja mégegyszer az előzőt?!!
-                    cnsz = 0;
+                    cnsz = false;
                     for (int i = 0; i < Domb.length; i++) {
                         for (int j = 0; j < Domb.length; j++) {
                             if (Domb[i][j] == L) {
@@ -276,64 +277,58 @@ public class Asonnak {
                                     if (cá != 4 && Domb[i][j] == Domb[i - 1][j] * -1) {
                                         Domb[i - 1][j] = Domb[i][j];
                                         cá++;
-                                        cnsz++;
+                                        cnsz = true;
                                     }
                                 }
-
                                 if (j != 0) {
                                     if (cá != 4 && Domb[i][j] == Domb[i][j - 1] * -1) {
                                         Domb[i][j - 1] = Domb[i][j];
                                         cá++;
-                                        cnsz++;
+                                        cnsz = true;
                                     }
                                 }
-
                                 if (j != 3) {
                                     if (cá != 4 && Domb[i][j] == Domb[i][j + 1] * -1) {
                                         Domb[i][j + 1] = Domb[i][j];
                                         cá++;
-                                        cnsz++;
+                                        cnsz = true;
                                     }
                                 }
-
                                 if (i != 3) {
                                     if (cá != 4 && Domb[i][j] == Domb[i + 1][j] * -1) {
                                         Domb[i + 1][j] = Domb[i][j];
                                         cá++;
-                                        cnsz++;
+                                        cnsz = true;
                                     }
                                 }
                             }
 
                         }
                     }
-                } while (cá != 4 && cnsz != 0);
+                } while (cá != 4 && cnsz); //cl+cá!!
 
                 if (cá != 0) {
                     kiir(Domb); //Ha legalább 1 területre átfolyt akkor írja ki
                 }
 
-            } while (cnsz != 0);
+            } while (cnsz);
 
             //EMELKEDÉS
-            E=0;
+            E = false;
             for (int i = 0; i < Domb.length; i++) {
                 for (int j = 0; j < Domb.length; j++) {
                     if (Domb[i][j] == L && L != -4) {
                         Domb[i][j] -= 1;
-                        E++;
+                        E = true;
                     }
 
                 }
             }
             
-            if (E != 0) {
+            if (E) {
                 kiir(Domb);
             }
             
-            
-
         } while (vége(Domb));
     }
-
 }
